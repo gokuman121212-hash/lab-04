@@ -3,20 +3,14 @@ package com.example.myapplication
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.myapplication.ui.theme.MyApplicationTheme
 
 class MainActivity : ComponentActivity() {
@@ -28,11 +22,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    GreetingText(
-                        message = "Lab 04: Estado en Compose",
-                        from = "Desarrollo de Aplicaciones Mobile",
-                        modifier = Modifier.padding(16.dp)
-                    )
+                    MovieCounter()
                 }
             }
         }
@@ -40,35 +30,45 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun GreetingText(message: String, from: String, modifier: Modifier = Modifier) {
+fun MovieCounter(modifier: Modifier = Modifier) {
+    // Uso de rememberSaveable para preservar el estado ante rotaciones
+    var count by rememberSaveable { mutableStateOf(0) }
+
+    StatelessCounter(
+        count = count,
+        onIncrement = { count++ },
+        modifier = modifier
+    )
+}
+
+@Composable
+fun StatelessCounter(
+    count: Int,
+    onIncrement: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     Column(
-        verticalArrangement = Arrangement.Center,
+        modifier = modifier.padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.fillMaxSize()
+        verticalArrangement = Arrangement.Center
     ) {
-        Text(
-            text = message,
-            fontSize = 32.sp,
-            lineHeight = 40.sp,
-            textAlign = TextAlign.Center
-        )
-        Text(
-            text = from,
-            fontSize = 20.sp,
-            modifier = Modifier
-                .padding(top = 16.dp)
-                .align(alignment = Alignment.End)
-        )
+        if (count > 0) {
+            Text(text = "Has agregado $count películas.")
+        }
+        Button(
+            onClick = onIncrement,
+            modifier = Modifier.padding(top = 8.dp),
+            enabled = count < 10
+        ) {
+            Text("Agregar película")
+        }
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun BirthdayCardPreview() {
+fun PreviewMovieCounter() {
     MyApplicationTheme {
-        GreetingText(
-            message = "Lab 04: Estado en Compose",
-            from = "Desarrollo de Aplicaciones Mobile"
-        )
+        MovieCounter()
     }
 }
