@@ -1,4 +1,4 @@
-package com.example.happybirthday
+package com.example.myapplication
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -17,22 +17,21 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.happybirthday.ui.theme.HappyBirthdayTheme
+import com.example.myapplication.ui.theme.MyApplicationTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            HappyBirthdayTheme {
-                // Contenedor principal para la app ejecutada
+            MyApplicationTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
                     GreetingText(
-                        message = "Happy Birthday Sam!",
-                        from = "From Emma",
-                        modifier = Modifier.padding(8.dp)
+                        message = "Lab 04: Estado en Compose",
+                        from = "Desarrollo de Aplicaciones Mobile",
+                        modifier = Modifier.padding(16.dp)
                     )
                 }
             }
@@ -40,37 +39,36 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-// 1. Función componible principal de texto
 @Composable
 fun GreetingText(message: String, from: String, modifier: Modifier = Modifier) {
     Column(
         verticalArrangement = Arrangement.Center,
-        modifier = modifier
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier.fillMaxSize()
     ) {
         Text(
             text = message,
-            fontSize = 100.sp,
-            lineHeight = 116.sp,
+            fontSize = 32.sp,
+            lineHeight = 40.sp,
             textAlign = TextAlign.Center
         )
         Text(
             text = from,
-            fontSize = 36.sp,
+            fontSize = 20.sp,
             modifier = Modifier
-                .padding(16.dp)
+                .padding(top = 16.dp)
                 .align(alignment = Alignment.End)
         )
     }
 }
 
-// 2. Vista previa en el panel de diseño de Android Studio
 @Preview(showBackground = true)
 @Composable
 fun BirthdayCardPreview() {
-    HappyBirthdayTheme {
+    MyApplicationTheme {
         GreetingText(
-            message = "Happy Birthday Sam!",
-            from = "From Emma"
+            message = "Lab 04: Estado en Compose",
+            from = "Desarrollo de Aplicaciones Mobile"
         )
     }
 }
