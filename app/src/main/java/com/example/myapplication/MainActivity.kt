@@ -1,71 +1,79 @@
 ﻿package com.example.myapplication
 
-import android.Manifest
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Bundle
-import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.core.content.ContextCompat
-import com.example.myapplication.service.FloatingHandService
-import com.example.myapplication.ui.GestureCameraScreen
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 
 class MainActivity : ComponentActivity() {
-
-    private val cameraPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { isGranted ->
-        if (isGranted) {
-            checkOverlayPermissionAndStart()
-        }
-    }
-
-    private val overlayPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) {
-        if (Settings.canDrawOverlays(this)) {
-            startFloatingService()
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        
-        // 1. Validar permisos de cámara
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
-        } else {
-            checkOverlayPermissionAndStart()
-        }
-
         setContent {
-            Surface(modifier = Modifier.fillMaxSize()) {
-                // Aquí se enciende la cámara en vivo y detecta los puntos de tu mano
-                GestureCameraScreen()
+            Surface(
+                modifier = Modifier.fillMaxSize(),
+                color = MaterialTheme.colorScheme.background
+            ) {
+                MovieCounter()
             }
         }
     }
+}
 
-    private fun checkOverlayPermissionAndStart() {
-        if (!Settings.canDrawOverlays(this)) {
-            val intent = Intent(
-                Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                Uri.parse("package:" + packageName)
-            )
-            overlayPermissionLauncher.launch(intent)
-        } else {
-            startFloatingService()
+@Composable
+fun MovieCounter(modifier: Modifier = Modifier) {
+    var count by rememberSaveable { mutableStateOf(0) }
+    var movieName by rememberSaveable { mutableStateOf("") }
+
+    Column(
+        modifier = modifier.padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(text = "You have added $count movies.")
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        TextField(
+            value = movieName,
+            onValueChange = { movieName = it },
+            label = { Text("Movie Name") },
+            singleLine = true
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(
+            onClick = {
+                if (movieName.isNotBlank()) {
+                    count++
+                    movieName = ""
+                }
+            }
+        ) {
+            Text("Add Movie")
         }
     }
+}
 
-    private fun startFloatingService() {
-        val intent = Intent(this, FloatingHandService::class.java)
-        startService(intent)
-    }
+@Preview(showBackground = true)
+@Composable
+fun PreviewMovieCounter() {
+    MovieCounter()
 }
