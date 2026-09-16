@@ -1,4 +1,4 @@
-package com.example.myapplication
+﻿package com.example.myapplication
 
 import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
@@ -19,4 +19,4 @@ class WellnessViewModel : ViewModel() {
     }
 }
 
-private fun getWellnessTasks() = List(30) { i -> WellnessTask(i, "Task # $i") }
+private fun getWellnessTasks() = List(30) { i -> WellnessTask(i, "Task # ") }
